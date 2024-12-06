@@ -46,7 +46,7 @@
 
         function createElementTd(value) {
             let td = document.createElement("td");  
-            td.innerText = value.imie;  
+            td.innerText = value;  
             return td;                   
         }
 
@@ -55,7 +55,7 @@
         dane.forEach((value)=>{
             let tr = document.createElement("tr");   // Tworzymy element     <tr></tr>
 
-            let td = createElementTd(value);
+            let td = createElementTd(value.imie);
             tr.appendChild(td);  
 
             let td2 = document.createElement("td");  // Tworzymy element     <td></td>

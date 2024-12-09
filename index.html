@@ -43,32 +43,24 @@
             }
         ];
 
-
         function createElementTd(value) {
             let td = document.createElement("td");  
             td.innerText = value;  
             return td;                   
         }
-
         // DRY - Dont Repeat Yourself
         let tabela = document.getElementById("tabela")
         dane.forEach((value)=>{
-            let tr = document.createElement("tr");   // Tworzymy element     <tr></tr>
-
-            let td = createElementTd(value.imie);
-            tr.appendChild(td);  
-
-            let td2 = document.createElement("td");  // Tworzymy element     <td></td>
-            td2.innerText = value.nazwisko;          // Wypełniamy danymi    <td>May</td>
-            tr.appendChild(td2);                     // Wkładamy td w tr     <tr><td>Karol</td><td>May</td></tr>
-
-            let td3 = document.createElement("td");  // Tworzymy element     <td></td>
-            td3.innerText = value.rokUrodzenia;      // Wypełniamy danymi    <td>1987</td>
-            tr.appendChild(td3);                     // Wkładamy td w tr     <tr><td>Karol</td><td>May</td><td>1987</td></tr>
-
-            tabela.appendChild(tr);                  // Wkładamy tr w table  <table><tr><td>Karol</td><td>May</td><td>1987</td></tr></table>
+            let tr = document.createElement("tr");              
+            [value.imie,value.nazwisko,value.rokUrodzenia].forEach(
+                (dana)=>{
+                    tr.appendChild(createElementTd(dana)); 
+                }
+            )            
+            tabela.appendChild(tr);             
         })  
-        
     </script>
 </body>
 </html>
+
+

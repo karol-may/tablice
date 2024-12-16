@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,58 +10,70 @@
         table {
             width: 100%;
         }
-        table tr {
-            counter-increment: rzad;
-        }
-        table tr td {
-            counter-increment: kolumna;
-        }
-        table tr td::before {
-            /* content: counter(kolumna,  upper-alpha) counter(rzad) */
-        } 
     </style>
 </head>
+
 <body>
     <h1>Tablice</h1>
     <h2>HTML</h2>
+    <input type="radio" value="lt" name="porownanie">&lt;
+    <input type="radio" value="gt" name="porownanie">&gt;
+    <input type="radio" value="eq" name="porownanie" checked>=
+    <input type="radio" value="le" name="porownanie">&le;
+    <input type="radio" value="ge" name="porownanie">&ge;
+    <input type="button" value="1950" onclick="pobierzDane(this.value)">
+    <input type="button" value="1960" onclick="pobierzDane(this.value)">
+    <input type="button" value="1970" onclick="pobierzDane(this.value)">
+    <input type="button" value="1980" onclick="pobierzDane(this.value)">
+    <input type="button" value="1990" onclick="pobierzDane(this.value)">
+    <input type="button" value="2000" onclick="pobierzDane(this.value)">
+    <input type="button" value="2010" onclick="pobierzDane(this.value)">
     <table border="1" id="tabela"></table>
     <script>
-        let dane = [
-            {
-                imie: "Karol",
-                nazwisko: "May",
-                rokUrodzenia: "1987"
-            },
-            {
-                imie: "Jakub",
-                nazwisko: "Zyśk",
-                rokUrodzenia: "2009"
-            },
-            {
-                imie: "Tomek",
-                nazwisko: "Maciejewski",
-                rokUrodzenia: "2009"
-            }
-        ];
+
+        let dane = [];
 
         function createElementTd(value) {
-            let td = document.createElement("td");  
-            td.innerText = value;  
-            return td;                   
+            let td = document.createElement("td");
+            td.innerText = value;
+            return td;
         }
-        // DRY - Dont Repeat Yourself
-        let tabela = document.getElementById("tabela")
-        dane.forEach((value)=>{
-            let tr = document.createElement("tr");              
-            [value.imie,value.nazwisko,value.rokUrodzenia].forEach(
-                (dana)=>{
-                    tr.appendChild(createElementTd(dana)); 
+
+        // DRY - Dont Repeat Yourself           
+        async function pobierzDane(rok) {
+            let znak = document.querySelector("input[name='porownanie']:checked").value
+            console.log(znak)            
+            let tabela = document.getElementById("tabela")
+            tabela.innerHTML = "";
+            try {                
+                // Wykonanie żądania
+                let serverResponse = await fetch("http://localhost/server/?rok="+rok+"&porownanie="+znak);
+
+                // Sprawdzanie odpowiedzi
+                if (!serverResponse.ok) {
+                    throw new Error(`Błąd HTTP: ${serverResponse.status}`);
                 }
-            )            
-            tabela.appendChild(tr);             
-        })  
+
+                // Parsowanie JSON
+                let dane = await serverResponse.json();
+
+                // Przetwarzanie danych
+                dane.forEach((value) => {
+                    let tr = document.createElement("tr");
+
+                    [value.imie, value.nazwisko, value.rok].forEach((dana) => {
+                        tr.appendChild(createElementTd(dana));
+                    });
+
+                    tabela.appendChild(tr);
+                });
+            } catch (error) {
+                console.error("Wystąpił błąd podczas pobierania danych:", error);
+            }
+        }
+
+
     </script>
 </body>
+
 </html>
-
-
